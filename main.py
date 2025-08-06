@@ -6,7 +6,6 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from fastmcp import FastMCP
 
-
 ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
 API_KEY = os.getenv("AI_SEARCH_API_KEY")
 if not ENDPOINT or not API_KEY:
@@ -35,9 +34,8 @@ class SearchResponse(BaseModel):
     results: List[SearchResult]
 
 # Create FastAPI app
-app = FastAPI(title="Azure Search MCP Server", version="1.0")
-
-@app.get("/keyword_search")
+mcp = FastMCP(name="azure-search-mcp")
+@mcp.tool("/keyword_search")
 async def keyword_search_resource(product: str, query: str = "", top: int = 5) -> dict:
     idx = INDEX_MAP.get(product.lower())
     if not idx:
@@ -48,22 +46,22 @@ async def keyword_search_resource(product: str, query: str = "", top: int = 5) -
     
 
 
-@app.get("/", tags=["health"])
+@mcp.resource("json://health", tags=["health"])
 async def health():
     return {"status": "running", "products": product_list}
 
-@app.get("/routes", tags=["debug"])
-async def get_routes():
-    return [{"path": route.path, "name": route.name} for route in app.routes]
+# @mcp.resource("/routes", tags=["debug"])
+# async def get_routes():
+#     return [{"path": route.path, "name": route.name} for route in mcp.routes]
 
 # Wrap FastAPI with MCP
-mcp = FastMCP.from_fastapi(app=app, name="azure-search-mcp")
+api = mcp.http_app(transport="streamable-http")
 
 if __name__ == "__main__":
     mcp.run(
         transport="http",
         host="0.0.0.0",
-        port=8000,
+        port=8080,
         path="/mcp",
         log_level="info"
     )
