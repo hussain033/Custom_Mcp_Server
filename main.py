@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
@@ -7,7 +6,6 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from fastmcp import FastMCP
 
-load_dotenv()
 
 ENDPOINT = os.getenv("AI_SEARCH_ENDPOINT")
 API_KEY = os.getenv("AI_SEARCH_API_KEY")
