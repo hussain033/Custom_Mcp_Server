@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+gunicorn
+fastmcp
+azure-search-documents==11.6.0b8
+azure-identity
+python-dotenv
