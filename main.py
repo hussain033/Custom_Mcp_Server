@@ -55,7 +55,7 @@ async def health():
 #     return [{"path": route.path, "name": route.name} for route in mcp.routes]
 
 # Wrap FastAPI with MCP
-api = mcp.http_app(transport="streamable-http")
+api = mcp.http_app(transport="http")
 
 if __name__ == "__main__":
     mcp.run(
